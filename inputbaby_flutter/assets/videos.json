@@ -1,0 +1,77 @@
+{
+  "videos": [
+    {
+      "id": "sample_video_001",
+      "title": "基础学习视频 - 字母认识",
+      "cover": "assets/videos/sample_cover.jpg",
+      "path": "assets/videos/sample.mp4",
+      "level": 1,
+      "type": "education",
+      "tags": ["字母", "基础", "认识"],
+      "description": "适合初学者的字母认识教学视频，通过生动有趣的方式帮助儿童学习基本字母。",
+      "duration": 120,
+      "difficulty": "beginner",
+      "category": "literacy"
+    },
+    {
+      "id": "sample_video_002", 
+      "title": "进阶学习视频 - 数字学习",
+      "cover": "assets/videos/sample_cover.jpg",
+      "path": "assets/videos/sample.mp4",
+      "level": 2,
+      "type": "education",
+      "tags": ["数字", "进阶", "计算"],
+      "description": "面向有一定基础的学习者，教授基本数字概念和简单计算。",
+      "duration": 150,
+      "difficulty": "intermediate", 
+      "category": "math"
+    },
+    {
+      "id": "sample_video_003",
+      "title": "高级学习视频 - 综合练习",
+      "cover": "assets/videos/sample_cover.jpg", 
+      "path": "assets/videos/sample.mp4",
+      "level": 3,
+      "type": "practice",
+      "tags": ["综合", "练习", "复习"],
+      "description": "综合性练习视频，帮助学习者巩固已学知识并进行综合应用。",
+      "duration": 180,
+      "difficulty": "advanced",
+      "category": "review"
+    },
+    {
+      "id": "sample_video_004",
+      "title": "娱乐学习视频 - 互动游戏",
+      "cover": "assets/videos/sample_cover.jpg",
+      "path": "assets/videos/sample.mp4", 
+      "level": 1,
+      "type": "entertainment",
+      "tags": ["游戏", "互动", "娱乐"],
+      "description": "寓教于乐的互动游戏视频，让学习变得更加有趣。",
+      "duration": 90,
+      "difficulty": "beginner",
+      "category": "game"
+    },
+    {
+      "id": "sample_video_005",
+      "title": "专项训练 - 阅读理解",
+      "cover": "assets/videos/sample_cover.jpg",
+      "path": "assets/videos/sample.mp4",
+      "level": 2, 
+      "type": "training",
+      "tags": ["阅读", "理解", "训练"],
+      "description": "专门训练阅读理解能力的视频课程，提升学习者的理解水平。",
+      "duration": 135,
+      "difficulty": "intermediate",
+      "category": "reading"
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-01-30T10:00:00Z",
+    "totalVideos": 5,
+    "supportedLevels": [1, 2, 3],
+    "supportedTypes": ["education", "entertainment", "practice", "training"],
+    "supportedCategories": ["literacy", "math", "review", "game", "reading"]
+  }
+} 

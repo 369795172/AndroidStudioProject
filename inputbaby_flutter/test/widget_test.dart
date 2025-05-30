@@ -8,23 +8,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:inputbaby_flutter/main.dart';
+import '../lib/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('InputBabyApp widget test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const InputBabyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that our Flutter app is working - look for video home page content
+    // The app should show some video-related content or at least load without errors
+    expect(find.byType(MaterialApp), findsOneWidget);
+    
+    // Let the app fully render
+    await tester.pumpAndSettle();
+    
+    // Since our app navigates to the video home page, check if it rendered successfully
+    // This test mainly verifies the app can start without crashing
+    expect(tester.allWidgets.isNotEmpty, true);
   });
 }
