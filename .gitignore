@@ -1,0 +1,92 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Android Studio generated files
+.gradle/
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+build/
+captures/
+local.properties
+
+# Flutter/Dart related
+**/dart_tool/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/build/
+
+# Web related
+**/web/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Generated plugin registrant files
+**/GeneratedPluginRegistrant.h
+**/GeneratedPluginRegistrant.m
+**/GeneratedPluginRegistrant.swift
+
+# Backup and temporary files
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+
+# Large archive files that don't need to be in git
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Error logs and debug files
+error.log
+debug.log
+*.xml
+.git_commit_msg
+
+# Miscellaneous
+*.swp
+*.swo
+.vscode/ 

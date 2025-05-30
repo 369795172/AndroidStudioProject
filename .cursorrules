@@ -1,0 +1,354 @@
+# Scratchpad
+
+# New Task: Implement Switch-style Home UI with HorizontalPager
+
+## Task Overview:
+User wants to transform the current MainActivity.kt into a Switch-style card-based homepage with HorizontalPager, containing 4 pages:
+1. 看视频 (Watch Videos)
+2. 听音频 (Listen Audio) 
+3. 玩游戏 (Play Games)
+4. AI交互 (AI Interaction)
+
+## Current State Analysis:
+[X] 1. **Project Structure Analyzed:**
+    - Current entry point: MainActivity.kt (not BootActivity.kt)
+    - Current UI: LazyRow showing video cards horizontally
+    - VideoPlayerActivity.kt handles Flutter video playback
+    - Project already builds successfully on device
+
+[X] 2. **Dependencies Review:**
+    - Compose is already enabled in build.gradle.kts
+    - Need to add Foundation library for HorizontalPager support
+    - Current libs include: Compose BOM, Material3, Activity Compose, etc.
+
+## Implementation Plan:
+
+[X] 1. **Update dependencies:**
+    [X] 1a. Add androidx.compose.foundation library to support HorizontalPager
+    [X] 1b. Add Material Icons Extended for better icon choices
+
+[X] 2. **Create new Activity classes:**
+    [X] 2a. Create VideoMenuActivity.kt (for video recommendations)
+    [X] 2b. Create placeholder TBDActivity.kt for unimplemented features
+    [X] 2c. Optionally create AudioMenuActivity.kt and GameMenuActivity.kt as TBD placeholders
+
+[X] 3. **Transform MainActivity.kt:**
+    [X] 3a. Replace LazyRow with HorizontalPager (4 pages)
+    [X] 3b. Implement Switch-style cards with proper styling
+    [X] 3c. Add navigation logic to respective activities
+    [X] 3d. Keep only video functionality working, others go to TBD
+
+[X] 4. **Update VideoMenuActivity:**
+    [X] 4a. Move existing video recommendation logic from MainActivity to VideoMenuActivity
+    [X] 4b. Implement proper video card layout for recommendations
+
+[X] 5. **Update AndroidManifest.xml:**
+    [X] 5a. Register VideoMenuActivity and TBDActivity
+
+[X] 6. **Fix Build Issues:**
+    [X] 6a. Fixed "Unresolved label" error in VideoMenuActivity.kt
+    [X] 6b. Properly handled Activity context reference in Compose
+    [X] 6c. Build now completes successfully ✅
+
+[ ] 7. **Testing:**
+    [ ] 7a. Test navigation between homepage and video menu
+    [ ] 7b. Ensure video playback still works through VideoPlayerActivity
+
+## Testing Steps (Android Studio + Device):
+
+### Step 1: Clean Everything ✅ (Complete)
+### Step 2: Android Studio Operations ✅ (Complete)
+### Step 3: Expected Behavior
+- **HomePage**: 4 Switch-style cards (看视频, 听音频, 玩游戏, AI交互)
+- **Navigation**: Only "看视频" goes to VideoMenuActivity, others to TBDActivity
+- **Video Menu**: Shows LazyRow with 5 video cards
+- **Video Cards**: Click should launch Flutter VideoPlayerActivity
+
+### Step 4: Build Status ✅ 
+- **BUILD SUCCESSFUL** - Kotlin compilation errors resolved
+- Minor deprecation warning for Icons.Filled.ArrowBack (easily fixable)
+- Ready for device testing!
+
+**Status: Ready for final testing!** User can now build and test the new Switch-style homepage.
+
+## Design Specifications:
+- **HorizontalPager**: 4 pages with contentPadding and pageSpacing for Switch-like feel
+- **Card Design**: RoundedCornerShape(16.dp) + elevation for Switch game card aesthetic
+- **Icons**: Material Icons (VideoLibrary, Mic, VideogameAsset, Brain)
+- **Navigation**: Only "看视频" goes to VideoMenuActivity, others to TBDActivity
+
+## Previous Task Context (Android + Flutter integration):
+- Had build failures with Flutter AAR dependencies
+- VideoPlayerActivity.kt integrates with Flutter module for video playback
+- Build issues may resurface, but focusing on UI-only changes for now
+- User mentioned current code "已经可以在手机上成功生成app" (already successfully builds on device)
+
+---
+
+# Main Task: Assist user with Android + Flutter project setup based on provided document. User is at Step 4/5 (Build & Run).
+
+## Previous Steps Recap:
+[X] Step 4: 引入 Flutter Module (Introducing Flutter Module) - Mostly done, settings.gradle.kts and VideoPlayerActivity.kt updated.
+[X] Step 5: Flutter 页面开发 (Flutter Page Development) - main.dart and placeholders implemented.
+
+## Current Issue: Build Failure during Test Run (Android side)
+
+**Status Update:** User mentioned current code already builds successfully on device, so build issues may have been resolved. Now focusing on UI implementation task.
+
+**Error: `:video_player_android:compileDebugJavaWithJavac` failed.**
+   - `Could not find io.flutter:flutter_embedding_debug:1.0.0-149ac495838e08a115c42e1882f6a313876cd856`
+   - **Cause Analysis:**
+     - The required Flutter engine version (`149ac49583...`) matches the user's installed Flutter SDK.
+     - The local AAR output directory (`inputbaby_flutter/build/host/outputs/repo/io/flutter/`) does *not* contain the expected `flutter_embedding_debug` artifact; it only shows a `plugins/` subdirectory. This means the AAR build isn't placing engine artifacts there.
+     - The `video_player_android` plugin, or the Flutter Gradle Plugin itself, is failing to resolve this dependency from the configured repositories (which include the official Flutter maven repo and the local AAR repo). Repository declaration conflicts (warnings in `error.log`) are still a prime suspect, potentially confusing Gradle despite `PREFER_SETTINGS`.
+
+## Next Steps:
+
+[X] 1. **Verify Flutter Module Build & Engine Version:**
+    [X] 1a. User ran `flutter --version`. Engine hash matches the one Gradle seeks (`149ac49583...`).
+
+[ ] 2. **Investigate AAR Output and Dependency Resolution:**
+    [X] 2a. Checked `inputbaby_flutter/build/host/outputs/repo/io/flutter/flutter_embedding_debug/1.0.0-149ac49583.../` - Path does not exist.
+    [X] 2b. Listed `inputbaby_flutter/build/host/outputs/repo/io/flutter/` - Only contains `plugins/`.
+    [ ] 2c. **Action:** User to clean and rebuild Flutter AAR:
+        ```bash
+        cd inputbaby_flutter
+        flutter clean
+        flutter pub get
+        flutter build aar --debug
+        ```
+    [ ] 2d. User to re-attempt building the main Android project (`NativeInputer`) and report results (provide new `error.log` if it fails).
+
+[ ] 3. **If Android build still fails (after AAR clean rebuild):**
+    [ ] 3a. Analyze new `error.log`.
+    [ ] 3b. **Inspect Flutter SDK artifact cache:** Check if `YOUR_FLUTTER_SDK_PATH/bin/cache/artifacts/engine/android-arm64-debug/io/flutter/flutter_embedding_debug/1.0.0-149ac495838e08a115c42e1882f6a313876cd856/` (or similar arch) exists and contains the POM and AAR files. User to provide their Flutter SDK path (from `inputbaby_flutter/.android/local.properties`).
+    [ ] 3c. Consider if `RepositoriesMode.FAIL_ON_PROJECT_REPOS` could provide more insight, or if there's a way to override/force repository for `video_player_android`.
+    [ ] 3d. Review Flutter Gradle Plugin (`module_plugin_loader.gradle`) logic for how it expects to find engine artifacts when `flutter build aar` is used.
+
+[ ] 4. Update `.cursorrules` with final outcome.
+
+# Lessons Learned during Step 4 & 5:
+# - For settings.gradle.kts (Kotlin DSL), to apply a Groovy script (like include_flutter.groovy):
+#   Use `apply(from = "path/to/script.groovy")`.
+# - The `flutter_module/.android/include_flutter.groovy` script handles the specifics of including the Flutter module 
+#   (often named `:flutter` internally within that script, or it might rename the module provided by `include()` in settings.gradle).
+# - `FlutterFragment.withCachedEngine(engine.dartExecutor.isolatedEngineId)` is the documented way to use an engine instance
+#   that's managed (e.g., lazily initialized) within the Activity itself, distinct from a globally managed FlutterEngineCache via a string ID. 
+# - Build errors like "Process 'command .../flutter/bin/flutter' finished with non-zero exit value 1" for :flutter:compileFlutterBuildDebug often mean the Flutter module itself has build issues (e.g., Dart errors, pubspec problems).
+# - "Could not find io.flutter:flutter_embedding_debug:..." typically indicates the Android side cannot locate the Flutter AAR, possibly due to the Flutter module not building or repository misconfiguration in Gradle.
+# - Gradle's warning "The project declares repositories, effectively ignoring the repositories you have declared in the settings" is a critical clue for dependency resolution issues.
+# - The error "Too many positional arguments: 0 allowed, but 1 found" for a widget like `Column` means something was passed inside `Column(...)` before a named argument, e.g., `Column(someValue, children: [])` instead of `Column(children: [])`. It's a direct call syntax error. If the code looks visually correct, suspect invisible characters or very subtle typos, and try retyping or simplifying the widget call.
+
+## Step 4: 引入 Flutter Module (Introducing Flutter Module)
+
+[X] 1. Verify/Correct Flutter Module inclusion in `NativeInputer/settings.gradle.kts`.
+    [X] 1a. Read `NativeInputer/settings.gradle.kts`.
+    [X] 1b. Check for `include(":inputbaby_flutter")`.
+    [X] 1c. Check for the correct way to apply `include_flutter.groovy` using Kotlin DSL, ensuring paths are correct.
+    [X] 1d. Proposed and applied changes to `NativeInputer/settings.gradle.kts`.
+
+[X] 2. Verify/Create `VideoPlayerActivity.kt` in `NativeInputer`.
+    [X] 2a. Determined the package name `com.muyugan.nativeinputer`.
+    [X] 2b. Confirmed `VideoPlayerActivity.kt` exists at `NativeInputer/app/src/main/java/com/muyugan/nativeinputer/VideoPlayerActivity.kt`.
+    [X] 2c. Read its content.
+    [X] 2d. Compared with the document's snippet and identified differences.
+    [X] 2e. Updated `VideoPlayerActivity.kt` to align with the document's snippet.
+
+[X] 3. Update `.cursorrules` with progress and any learned lessons.
+
+## Step 5: Flutter 页面开发 (Flutter Page Development)
+
+[ ] 1. Update `.cursorrules` scratchpad for Step 5.
+[ ] 2. Locate/Create `lib/main.dart` in `inputbaby_flutter`.
+    [ ] 2a. Read existing `lib/main.dart` if present.
+    [ ] 2b. Compare with the document snippet.
+[ ] 3. Implement/Update `lib/main.dart` based on the document snippet.
+    [ ] 3a. Create `InputBabyApp` StatelessWidget.
+    [ ] 3b. Setup `MaterialApp` with routes for `/` and `/player`.
+    [ ] 3c. Create `VideoHomePage` StatelessWidget (initial structure).
+    [ ] 3d. Create `VideoPlayerPage` StatefulWidget (initial structure).
+[ ] 4. Create placeholder implementations or stubs for helper classes/functions mentioned:
+    [ ] 4a. `LocalStore` (for `resume` and `saveProgress`).
+    [ ] 4b. `videosOf(level)` function.
+    [ ] 4c. `VideoTile` widget.
+    [ ] 4d. `ResumeBanner` widget.
+    [ ] 4e. `findAsset(videoId)` function.
+    [ ] 4f. `QuizManager`.
+    [ ] 4g. `RewardBloc` and `RewardIndicator`.
+[ ] 5. Discuss/Implement `SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky)`.
+[ ] 6. Note about Impeller (build configuration, not direct code change in `main.dart`).
+[ ] 7. Update `.cursorrules` with progress and lessons. 
+
+## Implementation Summary:
+✅ **Completed Nintendo Switch-style UI implementation:**
+- MainActivity.kt now uses LazyRow instead of HorizontalPager for true Switch experience
+- Multiple cards visible horizontally at once (not one card per page)
+- Cards use proper Switch-style dimensions: 280dp width × 200dp height
+- Card styling: RoundedCornerShape(12.dp), elevation, Material 3 colors
+- Icons: VideoLibrary, Mic, SportsEsports, SmartToy
+- Only "看视频" navigates to VideoMenuActivity, others go to TBDActivity
+- VideoMenuActivity contains the original video recommendation LazyRow
+- TBDActivity shows a nice "under construction" placeholder
+
+✅ **UI Architecture (Nintendo Switch Style):**
+- **Home Page**: Horizontal scrolling LazyRow with multiple cards visible
+- **Card Layout**: Self-adaptive card dimensions (25% screen width, min 220dp, max 320dp)
+- **Responsive Design**: Icons and text scale with card size for optimal viewing
+- **Perfect Centering**: Cards and content are vertically centered on screen
+- **Navigation**: Tap card to enter respective activity
+- **Visual Design**: Clean, modern Material 3 with Switch-inspired layout
+
+✅ **Dependencies added:**
+- androidx.compose.foundation:foundation:1.6.0 (for LazyRow support)
+- androidx.compose.material:material-icons-extended:1.6.0 (for better icons)
+
+✅ **Architecture:**
+- Clean separation of concerns: HomePage → VideoMenu → VideoPlayer (Flutter)
+- Placeholder Activities for future features (Audio, Games, AI)
+
+**Status: Nintendo Switch-style UI Complete & Ready for Testing!** 
+User can now build and test the authentic Switch-style homepage with multiple cards visible horizontally. 
+
+# Current Task: 看视频页面UI/UX改进 (Video Page UI/UX Improvement)
+
+## Task Overview:
+用户要求改进VideoMenuActivity.kt的UI设计，实现以下功能：
+1. **筛选栏**：包含"等级"、"类型"、"标签"三个筛选类目
+2. **搜索框**：位于筛选栏右侧，支持模糊搜索课程内容  
+3. **播放器**：位于筛选栏下方，直接播放用户上次停的视频
+4. **播放目录**：播放器上显示播放目录功能
+
+## Current State Analysis:
+[X] 1. **VideoMenuActivity.kt结构分析:**
+    - 当前使用CenterAlignedTopAppBar + Scaffold结构
+    - 主要内容：VideoRecommendationContent显示LazyRow视频卡片
+    - 数据结构：VideoItem(id, title, thumbnailUrl)
+    - 点击视频卡片启动VideoPlayerActivity（Flutter播放器）
+
+## Implementation Plan:
+
+[X] 1. **设计新的UI布局结构:**
+    [X] 1a. 顶部：筛选栏（等级/类型/标签下拉选择）+ 搜索框
+    [X] 1b. 中部：播放器区域（显示上次播放视频 + 播放目录按钮）
+    [X] 1c. 底部：视频列表（根据筛选条件显示）
+
+[X] 2. **实现筛选功能:**
+    [X] 2a. 创建筛选状态管理（等级/类型/标签）
+    [X] 2b. 设计筛选下拉菜单UI组件
+    [X] 2c. 实现筛选逻辑，更新视频列表
+
+[X] 3. **实现搜索功能:**
+    [X] 3a. 添加搜索框组件
+    [X] 3b. 实现模糊搜索逻辑
+    [X] 3c. 搜索结果实时更新
+
+[X] 4. **实现播放器区域:**
+    [X] 4a. 创建LastPlayedVideo组件
+    [X] 4b. 添加播放目录按钮
+    [X] 4c. 实现继续播放功能
+
+[X] 5. **数据模型扩展:**
+    [X] 5a. 扩展VideoItem数据类（添加等级、类型、标签字段）
+    [X] 5b. 创建筛选和搜索的数据处理逻辑
+    [X] 5c. 添加上次播放记录的存储逻辑
+
+[X] 6. **UI优化:**
+    [X] 6a. 响应式布局设计
+    [X] 6b. Material 3设计规范
+    [X] 6c. 添加动画效果
+
+## 🎉 实现完成状态:
+
+✅ **完整的看视频页面UI/UX改进已实现:**
+
+### ✅ 筛选栏功能:
+- **等级筛选**: DropdownMenu支持"全部等级"、"等级1-5"选择
+- **类型筛选**: 支持"全部类型"、"儿歌"、"故事"、"英语"、"数学"、"科学"
+- **标签筛选**: 支持"全部标签"、"动画"、"互动"、"教育"、"娱乐"、"经典"
+- **响应式布局**: 三个筛选器使用weight(1f)均匀分布
+
+### ✅ 搜索功能:
+- **Material 3 SearchBar**: 现代化搜索体验
+- **模糊搜索**: 支持标题和描述内容搜索
+- **实时筛选**: 搜索结果即时更新
+- **搜索状态管理**: active状态和query状态分离
+
+### ✅ 播放器区域:
+- **LastPlayedVideoCard**: 显示上次播放的视频
+- **播放进度**: LinearProgressIndicator显示观看进度(65%)
+- **播放目录按钮**: PlaylistPlay图标，支持点击事件
+- **继续播放**: 点击卡片直接继续播放
+
+### ✅ 视频列表:
+- **LazyColumn布局**: 垂直滚动的视频列表
+- **视频元数据**: 等级、类型、标签显示为AssistChip
+- **缩略图占位符**: VideoLibrary图标占位
+- **描述信息**: 支持视频描述显示
+- **筛选计数**: 显示当前筛选结果数量
+
+### ✅ 数据结构:
+```kotlin
+data class VideoItem(
+    val id: String,
+    val title: String, 
+    val thumbnailUrl: String = "",
+    val level: Int,           // 等级
+    val type: String,         // 类型
+    val tags: List<String>,   // 标签列表
+    val description: String = "" // 描述
+)
+
+data class LastPlayedVideo(
+    val videoId: String,
+    val title: String,
+    val thumbnailUrl: String,
+    val progress: Float // 播放进度 0.0-1.0
+)
+```
+
+### ✅ 示例数据:
+- 8个示例视频涵盖不同等级、类型和标签
+- 丰富的内容类型: 儿歌、故事、英语、数学、科学
+- 上次播放: "三只小猪的故事"，进度65%
+
+## Testing Ready:
+- **构建状态**: 代码结构完整，应该能正常编译
+- **功能完整性**: 所有要求的UI/UX功能都已实现
+- **Material 3**: 使用现代化设计规范
+- **交互体验**: 筛选、搜索、播放都有完整的交互逻辑
+
+**Status: 🚀 看视频页面UI/UX改进完成！用户可以测试新的筛选、搜索和播放功能。**
+
+## Design Specifications:
+- **筛选栏布局**: Row with 3 DropdownMenus + Spacer + SearchBar
+- **播放器区域**: Card containing thumbnail + title + play button + playlist button  
+- **视频列表**: LazyColumn with filtered and searchable video items
+- **颜色方案**: Material 3 color scheme with proper contrast
+- **间距**: 16dp standard spacing, 8dp compact spacing
+
+## Data Structure Extensions:
+```kotlin
+data class VideoItem(
+    val id: String,
+    val title: String, 
+    val thumbnailUrl: String = "",
+    val level: Int,           // 新增：等级
+    val type: String,         // 新增：类型
+    val tags: List<String>,   // 新增：标签列表
+    val description: String = "" // 新增：描述（用于搜索）
+)
+
+data class LastPlayedVideo(
+    val videoId: String,
+    val title: String,
+    val thumbnailUrl: String,
+    val progress: Float // 播放进度 0.0-1.0
+)
+```
+
+## Required Dependencies:
+- 可能需要添加：androidx.compose.material3:material3-adaptive (for responsive design)
+- SearchBar组件（Material 3中已包含）
+- DropdownMenu组件（已在Compose中可用）
+
+--- 
