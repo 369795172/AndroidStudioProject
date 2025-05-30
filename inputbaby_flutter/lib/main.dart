@@ -40,11 +40,16 @@ List<VideoData> videosOf(int level) {
 }
 
 String findAsset(String videoId) {
+  print("[findAsset] ==================");
   print("[findAsset] Looking for videoId: $videoId");
-  // 为了测试，所有videoId都映射到sample.mp4
-  // 注意：在Flutter assets中，路径应该是相对于pubspec.yaml的
+  print("[findAsset] Input videoId type: ${videoId.runtimeType}");
+  
+  // Map all videoIds to sample.mp4 for now since we only have one test video
+  // In the future, this could map different videoIds to different assets
   const assetPath = "assets/videos/sample.mp4";
-  print("[findAsset] Returning asset path: $assetPath");
+  
+  print("[findAsset] Mapped to asset path: $assetPath");
+  print("[findAsset] ==================");
   return assetPath;
 }
 
@@ -263,7 +268,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     });
   }
 
-  void _initializePlayer() {
+  void _initializePlayer() async {
     if (!mounted) return; // Ensure widget is still in the tree
 
     final routeName = ModalRoute.of(context)?.settings.name;
@@ -296,6 +301,19 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       final assetPath = findAsset(videoId);
       print("[VideoPlayerPage] Asset path: $assetPath");
       print("[VideoPlayerPage] About to create VideoPlayerController...");
+      
+      // Verify asset exists before creating controller
+      print("[VideoPlayerPage] Verifying asset exists...");
+      try {
+        // Try to load asset bundle to verify the asset exists
+        final bundle = DefaultAssetBundle.of(context);
+        final assetData = await bundle.load(assetPath);
+        print("[VideoPlayerPage] ✅ Asset verified - size: ${assetData.lengthInBytes} bytes");
+      } catch (assetError) {
+        print("[VideoPlayerPage] ❌ Asset verification failed: $assetError");
+        print("[VideoPlayerPage] Asset error type: ${assetError.runtimeType}");
+        // Continue anyway to let VideoPlayer handle the error with proper fallback
+      }
 
       // Try to initialize video controller with local asset first
       // If that fails, we can fallback to a test network video

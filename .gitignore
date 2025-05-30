@@ -32,7 +32,6 @@ hs_err_pid*
 build/
 captures/
 local.properties
-res/
 
 # Flutter/Dart related
 **/dart_tool/
