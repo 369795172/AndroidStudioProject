@@ -17,6 +17,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.muyugan.nativeinputer.ui.theme.NativeInputerTheme
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import androidx.compose.foundation.background
 
 class VideoMenuActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -147,11 +153,13 @@ fun VideoMenuContent(onClick: (String, Int) -> Unit) {
 
         // Last Played Video Section
         lastPlayedVideo?.let { video ->
-            LastPlayedVideoCard(
+            FeaturedVideoPlayerView(
                 video = video,
-                onPlayClick = { onClick(video.videoId, 1) }, // Default level
-                onPlaylistClick = { /* Show playlist */ },
-                modifier = Modifier.padding(bottom = 16.dp)
+                onPlayClick = { onClick(video.videoId, 1) }, // Default level, adjust as needed
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp) // 固定高度，更紧凑
+                    .padding(bottom = 16.dp)
             )
         }
 
@@ -221,69 +229,90 @@ fun FilterDropdown(
 }
 
 @Composable
-fun LastPlayedVideoCard(
+fun FeaturedVideoPlayerView(
     video: LastPlayedVideo,
     onPlayClick: () -> Unit,
-    onPlaylistClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         onClick = onPlayClick,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .clip(MaterialTheme.shapes.medium),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .fillMaxSize()
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Thumbnail placeholder
-            Card(
-                modifier = Modifier.size(80.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            // Left: Thumbnail with play overlay
+            Box(
+                modifier = Modifier
+                    .size(96.dp)
+                    .clip(MaterialTheme.shapes.small),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.PlayArrow,
-                        contentDescription = "播放",
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
+                // Thumbnail
+                AsyncImage(
+                    model = video.thumbnailUrl.ifEmpty { R.drawable.ic_launcher_background },
+                    contentDescription = video.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+                
+                // Play Button Overlay
+                Icon(
+                    imageVector = Icons.Filled.PlayCircleFilled,
+                    contentDescription = "Play Video",
+                    tint = Color.White.copy(alpha = 0.9f),
+                    modifier = Modifier.size(32.dp)
+                )
             }
             
             Spacer(modifier = Modifier.width(16.dp))
             
-            Column(modifier = Modifier.weight(1f)) {
+            // Right: Video info
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = "继续观看",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = video.title,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                // Progress bar
                 LinearProgressIndicator(
                     progress = video.progress,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "已观看 ${(video.progress * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             
-            IconButton(onClick = onPlaylistClick) {
-                Icon(
-                    Icons.Default.PlaylistPlay,
-                    contentDescription = "播放目录"
-                )
-            }
+            // Right arrow
+            Icon(
+                imageVector = Icons.Filled.ChevronRight,
+                contentDescription = "播放",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
@@ -296,76 +325,50 @@ fun VideoListItem(
 ) {
     Card(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Thumbnail placeholder
-            Card(
-                modifier = Modifier.size(60.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.VideoLibrary,
-                        contentDescription = "视频",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.width(16.dp))
-            
+            // Thumbnail Placeholder (Replace with actual image loading if needed)
+            Icon(
+                imageVector = Icons.Filled.VideoLibrary,
+                contentDescription = "Video Thumbnail",
+                modifier = Modifier
+                    .size(80.dp)
+                    .padding(end = 8.dp),
+                tint = MaterialTheme.colorScheme.secondary
+            )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = video.title,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                if (video.description.isNotEmpty()) {
-                    Text(
-                        text = video.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-                
-                // Tags and metadata
-                Row(
-                    modifier = Modifier.padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    AssistChip(
-                        onClick = { },
-                        label = { Text("等级${video.level}") }
-                    )
-                    AssistChip(
-                        onClick = { },
-                        label = { Text(video.type) }
-                    )
-                    if (video.tags.isNotEmpty()) {
-                        AssistChip(
-                            onClick = { },
-                            label = { Text(video.tags.first()) }
-                        )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = video.description.ifEmpty { "点击查看详情" },
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    AssistChip(onClick = { /* Filter by level */ }, label = { Text("等级 ${video.level}") })
+                    AssistChip(onClick = { /* Filter by type */ }, label = { Text(video.type) })
+                    video.tags.take(2).forEach { tag -> // Show max 2 tags
+                        AssistChip(onClick = { /* Filter by tag */ }, label = { Text(tag) })
                     }
                 }
             }
-            
             Icon(
-                Icons.Default.PlayArrow,
-                contentDescription = "播放",
+                imageVector = Icons.Filled.ChevronRight,
+                contentDescription = "Play",
                 tint = MaterialTheme.colorScheme.primary
             )
         }

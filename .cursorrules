@@ -1,6 +1,33 @@
 # Scratchpad
 
-# New Task: Implement Switch-style Home UI with HorizontalPager
+# Current Task: Video Player UI Optimization (视频播放器UI优化)
+
+## Task Overview:
+用户反馈看视频页面的视频播放器占位太大，要求恢复使用卡片呈现，更紧凑的设计。
+
+## Implementation Status:
+[X] 1. **问题分析:**
+    - 当前FeaturedVideoPlayerView使用aspectRatio(16f / 9f)，占用空间过大
+    - 需要改为更紧凑的横向卡片布局
+
+[X] 2. **UI重新设计:**
+    [X] 2a. 将高度从aspectRatio改为固定height(120.dp)
+    [X] 2b. 重新设计为横向布局：左侧缩略图+播放按钮 + 右侧视频信息
+    [X] 2c. 添加进度条和观看进度显示
+    [X] 2d. 添加"继续观看"标签提升用户体验
+
+[X] 3. **新的FeaturedVideoPlayerView设计:**
+    - **布局**: Row布局，左侧96dp缩略图，右侧视频信息
+    - **高度**: 固定120dp，更加紧凑
+    - **信息展示**: 标题、观看进度条、进度百分比
+    - **交互**: 保持点击播放功能，添加右箭头指示
+
+**Status: ✅ UI优化完成！** 
+现在FeaturedVideoPlayerView是紧凑的横向卡片，包含缩略图、视频信息和进度条。
+
+---
+
+# Previous Task: Implement Switch-style Home UI with HorizontalPager
 
 ## Task Overview:
 User wants to transform the current MainActivity.kt into a Switch-style card-based homepage with HorizontalPager, containing 4 pages:
@@ -209,105 +236,98 @@ User wants to transform the current MainActivity.kt into a Switch-style card-bas
 **Status: Nintendo Switch-style UI Complete & Ready for Testing!** 
 User can now build and test the authentic Switch-style homepage with multiple cards visible horizontally. 
 
-# Current Task: 看视频页面UI/UX改进 (Video Page UI/UX Improvement)
+# 🚨 Current Issue: 视频播放器问题 (Video Player Issue)
 
-## Task Overview:
-用户要求改进VideoMenuActivity.kt的UI设计，实现以下功能：
-1. **筛选栏**：包含"等级"、"类型"、"标签"三个筛选类目
-2. **搜索框**：位于筛选栏右侧，支持模糊搜索课程内容  
-3. **播放器**：位于筛选栏下方，直接播放用户上次停的视频
-4. **播放目录**：播放器上显示播放目录功能
+## Problem Description:
+用户点击VideoMenuActivity中的"继续观看"视频后，跳转到的页面没有视频播放。需要使用sample.mp4进行测试。
 
-## Current State Analysis:
-[X] 1. **VideoMenuActivity.kt结构分析:**
-    - 当前使用CenterAlignedTopAppBar + Scaffold结构
-    - 主要内容：VideoRecommendationContent显示LazyRow视频卡片
-    - 数据结构：VideoItem(id, title, thumbnailUrl)
-    - 点击视频卡片启动VideoPlayerActivity（Flutter播放器）
+## Technical Analysis:
+[X] 1. **代码检查完成:**
+    - VideoPlayerActivity.kt: 正确传递参数到Flutter ✅
+    - main.dart: 路由配置正确，VideoPlayerPage实现完整 ✅
+    - pubspec.yaml: video_player依赖配置正确 ✅
+    - sample.mp4: 文件存在(60MB) ✅
+
+[X] 2. **可能的原因分析:**
+    - Flutter初始化过程中可能出现问题 ✅
+    - 视频文件路径解析可能有误 ✅
+    - VideoPlayerController初始化可能失败 ✅
+    - 调试日志可能显示实际错误 ✅
 
 ## Implementation Plan:
 
-[X] 1. **设计新的UI布局结构:**
-    [X] 1a. 顶部：筛选栏（等级/类型/标签下拉选择）+ 搜索框
-    [X] 1b. 中部：播放器区域（显示上次播放视频 + 播放目录按钮）
-    [X] 1c. 底部：视频列表（根据筛选条件显示）
+[X] 1. **修复路由问题:**
+    [X] 1a. 修改VideoPlayerActivity路由格式，确保参数正确传递 ✅
+    [X] 1b. 移除Flutter静态路由，强制使用onGenerateRoute处理 ✅
+    [X] 1c. 优先处理/player路由，避免回退到VideoHomePage ✅
 
-[X] 2. **实现筛选功能:**
-    [X] 2a. 创建筛选状态管理（等级/类型/标签）
-    [X] 2b. 设计筛选下拉菜单UI组件
-    [X] 2c. 实现筛选逻辑，更新视频列表
+[X] 2. **修复导航问题:**
+    [X] 2a. 使用SystemNavigator.pop()替代Navigator.pop() ✅
+    [X] 2b. 确保"返回"按钮直接关闭Flutter Activity回到Android ✅
+    [X] 2c. 修复横向拖动手势也使用SystemNavigator.pop() ✅
 
-[X] 3. **实现搜索功能:**
-    [X] 3a. 添加搜索框组件
-    [X] 3b. 实现模糊搜索逻辑
-    [X] 3c. 搜索结果实时更新
+[X] 3. **增强视频调试:**
+    [X] 3a. 添加详细的asset加载调试日志 ✅
+    [X] 3b. 实现网络视频fallback测试功能 ✅
+    [X] 3c. 改进错误UI，提供"返回"和"重试"选项 ✅
 
-[X] 4. **实现播放器区域:**
-    [X] 4a. 创建LastPlayedVideo组件
-    [X] 4b. 添加播放目录按钮
-    [X] 4c. 实现继续播放功能
+[X] 4. **构建验证:**
+    [X] 4a. Flutter模块重新构建成功 ✅
+    [X] 4b. Android项目构建成功 ✅ BUILD SUCCESSFUL
 
-[X] 5. **数据模型扩展:**
-    [X] 5a. 扩展VideoItem数据类（添加等级、类型、标签字段）
-    [X] 5b. 创建筛选和搜索的数据处理逻辑
-    [X] 5c. 添加上次播放记录的存储逻辑
+## Applied Fixes:
 
-[X] 6. **UI优化:**
-    [X] 6a. 响应式布局设计
-    [X] 6b. Material 3设计规范
-    [X] 6c. 添加动画效果
+✅ **路由优化:**
+- VideoPlayerActivity使用优化的路由格式："/player?videoId=xxx&level=xxx"
+- 移除Flutter静态routes配置，强制使用onGenerateRoute处理
+- 优先处理/player路由，避免显示VideoHomePage
 
-[X] 7. **Git仓库管理与GitHub上传:**
-    [X] 7a. 清理嵌套Git仓库（删除NativeInputer/.git和inputbaby_flutter/.git）
-    [X] 7b. 创建适合Android+Flutter项目的.gitignore文件
-    [X] 7c. 添加远程仓库git@github.com:369795172/NativeInputer.git
-    [X] 7d. 提交所有文件并成功推送到GitHub
-    [X] 7e. 仓库包含50个文件，3907行代码
+✅ **导航修复:**
+- 使用SystemNavigator.pop()替代Navigator.pop()确保回到Android
+- "返回"按钮和横向拖动都使用SystemNavigator.pop()
+- 确保用户回到VideoMenuActivity而不是错误的VideoHomePage
+
+✅ **视频调试增强:**
+- 如果本地asset失败，自动fallback到网络测试视频
+- 添加详细的asset路径和初始化调试日志
+- 改进错误UI，提供清晰的用户反馈
+
+✅ **构建状态:**
+- Flutter模块构建成功 ✅
+- Android项目构建成功 ✅
+
+## Next Steps for Testing:
+1. 在Android Studio中运行项目到设备
+2. 点击"看视频"进入VideoMenuActivity
+3. 点击"继续观看"卡片
+4. 测试以下场景：
+   - 如果本地视频加载失败，应自动切换到网络测试视频
+   - "返回"按钮应直接回到VideoMenuActivity
+   - 横向拖动应直接回到VideoMenuActivity
+5. 查看logcat中的详细调试信息
+
+## Expected Outcome:
+- 点击"继续观看" → 直接播放视频(本地或网络fallback)
+- "返回"操作 → 直接回到VideoMenuActivity，不再显示VideoHomePage
+- 详细的调试日志帮助定位问题
+
+---
+
+# Previous Task: 看视频页面UI/UX改进 (Video Page UI/UX Improvement) ✅ COMPLETED
 
 ## 🎉 实现完成状态:
 
 ✅ **完整的看视频页面UI/UX改进已实现:**
+- **筛选栏功能**: 等级/类型/标签筛选 + 搜索功能
+- **播放器区域**: FeaturedVideoPlayerView (16:9比例，播放按钮叠加)
+- **视频列表**: 支持筛选和搜索的LazyColumn视频列表
 
-### ✅ 筛选栏功能:
-- **等级筛选**: DropdownMenu支持"全部等级"、"等级1-5"选择
-- **类型筛选**: 支持"全部类型"、"儿歌"、"故事"、"英语"、"数学"、"科学"
-- **标签筛选**: 支持"全部标签"、"动画"、"互动"、"教育"、"娱乐"、"经典"
-- **响应式布局**: 三个筛选器使用weight(1f)均匀分布
-
-### ✅ 搜索功能:
-- **Material 3 SearchBar**: 现代化搜索体验
-- **模糊搜索**: 支持标题和描述内容搜索
-- **实时筛选**: 搜索结果即时更新
-- **搜索状态管理**: active状态和query状态分离
-
-### ✅ 播放器区域:
-- **LastPlayedVideoCard**: 显示上次播放的视频
-- **播放进度**: LinearProgressIndicator显示观看进度(65%)
-- **播放目录按钮**: PlaylistPlay图标，支持点击事件
-- **继续播放**: 点击卡片直接继续播放
-
-### ✅ 视频列表:
-- **LazyColumn布局**: 垂直滚动的视频列表
-- **视频元数据**: 等级、类型、标签显示为AssistChip
-- **缩略图占位符**: VideoLibrary图标占位
-- **描述信息**: 支持视频描述显示
-- **筛选计数**: 显示当前筛选结果数量
-
-### ✅ GitHub仓库状态:
-- **仓库地址**: https://github.com/369795172/NativeInputer
-- **项目结构**: 包含Android原生项目、Flutter模块、Python工具集
-- **提交信息**: "[Cursor] 初始提交：Android + Flutter混合项目"
-- **文件统计**: 50个文件，3907行代码
+✅ **GitHub仓库状态:**
+- **仓库地址**: https://github.com/369795172/NativeInputer  
+- **项目结构**: Android原生 + Flutter模块 + Python工具集
 - **功能完整**: Nintendo Switch风格UI + 视频筛选搜索播放功能
 
-## Testing Ready:
-- **构建状态**: 代码结构完整，应该能正常编译
-- **功能完整性**: 所有要求的UI/UX功能都已实现
-- **Material 3**: 使用现代化设计规范
-- **交互体验**: 筛选、搜索、播放都有完整的交互逻辑
-- **源码管理**: 完整项目已上传至GitHub
-
-**Status: 🚀 看视频页面UI/UX改进完成！项目已成功上传至GitHub！用户可以从仓库获取最新代码。**
+**Status: 🚀 看视频页面UI/UX改进完成！现在需要解决视频播放器直接播放问题。**
 
 ## Design Specifications:
 - **筛选栏布局**: Row with 3 DropdownMenus + Spacer + SearchBar

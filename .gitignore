@@ -32,6 +32,7 @@ hs_err_pid*
 build/
 captures/
 local.properties
+res/
 
 # Flutter/Dart related
 **/dart_tool/
@@ -83,7 +84,6 @@ app.*.map.json
 # Error logs and debug files
 error.log
 debug.log
-*.xml
 .git_commit_msg
 
 # Miscellaneous
